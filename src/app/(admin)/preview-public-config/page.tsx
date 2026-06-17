@@ -24,7 +24,28 @@ export default function PreviewPublicConfigPage() {
   }
 
   useEffect(() => {
-    loadConfig();
+    let active = true;
+
+    async function loadInitialConfig() {
+      try {
+        const response = await fetch("/api/public-config", { cache: "no-store" });
+        if (!response.ok) throw new Error("Gagal membaca endpoint publik.");
+        const data = await response.json();
+        if (active) setConfig(data);
+      } catch (fetchError) {
+        if (active) {
+          setError(fetchError instanceof Error ? fetchError.message : "Terjadi kesalahan.");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadInitialConfig();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (

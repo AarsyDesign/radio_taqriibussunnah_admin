@@ -60,7 +60,26 @@ export default function SchedulePage() {
   }
 
   useEffect(() => {
-    loadItems();
+    let active = true;
+
+    async function loadInitialItems() {
+      const { data } = await createClient()
+        .from("radio_schedule_items")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (active) {
+        setItems(data ?? []);
+        setLoading(false);
+      }
+    }
+
+    loadInitialItems();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   function update<K extends keyof ScheduleForm>(key: K, value: ScheduleForm[K]) {

@@ -5,9 +5,19 @@ import { TextAreaField, TextField, ToggleField, SaveButton } from "@/components/
 import { ImagePreview } from "@/components/image-preview";
 import { PageHeader } from "@/components/page-header";
 import { createClient } from "@/lib/supabase/client";
-import type { LiveConfig } from "@/lib/types";
 
-type LiveForm = Omit<LiveConfig, "id" | "updated_at">;
+type LiveForm = {
+  is_active: boolean;
+  title: string;
+  speaker: string;
+  topic: string;
+  time_text: string;
+  description: string;
+  image_url: string;
+  show_red_live_indicator: boolean;
+  button_text: string;
+  button_url: string;
+};
 
 const emptyForm: LiveForm = {
   is_active: false,
@@ -79,8 +89,8 @@ export default function LivePage() {
     setError("");
     setMessage("");
 
-    if (form.is_active && !form.title.trim()) {
-      setError("Title wajib diisi ketika info kajian live aktif.");
+    if (form.is_active && !form.title.trim() && !form.topic.trim()) {
+      setError("Title atau topik wajib diisi ketika info kajian live aktif.");
       return;
     }
     if (!isValidUrl(form.image_url ?? "") || !isValidUrl(form.button_url ?? "")) {

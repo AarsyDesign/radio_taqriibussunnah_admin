@@ -5,9 +5,20 @@ import { TextAreaField, TextField, ToggleField, SaveButton } from "@/components/
 import { ImagePreview } from "@/components/image-preview";
 import { PageHeader } from "@/components/page-header";
 import { createClient } from "@/lib/supabase/client";
-import type { EventConfig } from "@/lib/types";
 
-type EventForm = Omit<EventConfig, "id" | "updated_at">;
+type EventForm = {
+  is_active: boolean;
+  title: string;
+  subtitle: string;
+  speaker: string;
+  date_text: string;
+  time_text: string;
+  location: string;
+  description: string;
+  image_url: string;
+  button_text: string;
+  button_url: string;
+};
 
 const emptyForm: EventForm = {
   is_active: false,

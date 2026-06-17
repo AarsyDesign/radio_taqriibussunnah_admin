@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { formatDateTime, latestDate } from "@/lib/format";
@@ -62,8 +63,8 @@ export default function DashboardPage() {
     },
     {
       label: "Jadwal Harian",
-      value: `${schedule.length} item`,
-      detail: `${schedule.filter((item) => item.is_active).length} aktif`,
+      value: `${schedule.filter((item) => item.is_active).length} aktif`,
+      detail: `${schedule.length} total item`,
     },
     {
       label: "Update Terakhir",
@@ -82,20 +83,46 @@ export default function DashboardPage() {
       {loading ? (
         <p className="text-sm text-[#65725b]">Memuat dashboard...</p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {cards.map((card) => (
-            <section
-              key={card.label}
-              className="rounded-lg border border-[#d8cdb4] bg-[#fbf8ef] p-4 shadow-sm"
-            >
-              <p className="text-sm font-medium text-[#65725b]">{card.label}</p>
-              <p className="mt-3 text-2xl font-semibold text-[#203527]">
-                {card.value}
-              </p>
-              <p className="mt-2 text-sm text-[#6f7f55]">{card.detail}</p>
-            </section>
-          ))}
-        </div>
+        <>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {cards.map((card) => (
+              <section
+                key={card.label}
+                className="rounded-lg border border-[#d8cdb4] bg-[#fbf8ef] p-4 shadow-sm"
+              >
+                <p className="text-sm font-medium text-[#65725b]">
+                  {card.label}
+                </p>
+                <p className="mt-3 text-2xl font-semibold text-[#203527]">
+                  {card.value}
+                </p>
+                <p className="mt-2 text-sm text-[#6f7f55]">{card.detail}</p>
+              </section>
+            ))}
+          </div>
+
+          <section className="mt-6 rounded-lg border border-[#d8cdb4] bg-[#fbf8ef] p-4 shadow-sm">
+            <h3 className="text-base font-semibold text-[#203527]">
+              Akses Cepat
+            </h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[
+                { href: "/event", label: "Event" },
+                { href: "/live", label: "Live" },
+                { href: "/schedule", label: "Jadwal" },
+                { href: "/preview-public-config", label: "Preview Public Config" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-md border border-[#c9b991] px-3 py-2 text-sm font-medium text-[#47634d] transition hover:bg-[#efe4cd]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+        </>
       )}
     </>
   );

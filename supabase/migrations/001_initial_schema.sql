@@ -118,15 +118,27 @@ to authenticated
 using (true)
 with check (true);
 
+insert into public.radio_event_config (is_active, title)
+select false, ''
+where not exists (select 1 from public.radio_event_config);
+
+insert into public.radio_live_config (is_active, title, topic)
+select false, '', ''
+where not exists (select 1 from public.radio_live_config);
+
 insert into public.radio_schedule_items
   (title, time_text, description, category, sort_order, is_active, is_live_slot)
-values
-  ('Murottal Al-Qur''an', '00.00-04.30', null, 'Murottal', 10, true, false),
-  ('Kajian Pagi / Faedah Pagi', '04.30-05.00', null, 'Kajian', 20, true, false),
-  ('Dzikir Pagi', '05.00-06.00', null, 'Dzikir', 30, true, false),
-  ('Kajian Aqidah', '08.00-10.00', null, 'Kajian', 40, true, false),
-  ('Kajian Fiqih', '13.00-15.00', null, 'Kajian', 50, true, false),
-  ('Murottal Sore', '15.30-17.00', null, 'Murottal', 60, true, false),
-  ('Dzikir Petang', '17.00-18.00', null, 'Dzikir', 70, true, false),
-  ('Kajian Malam', '19.30-21.00', null, 'Kajian', 80, true, true),
-  ('Siaran Bebas / AutoDJ', 'Menyesuaikan', null, 'AutoDJ', 90, true, false);
+select *
+from (
+  values
+    ('Murottal Al-Qur''an', '00.00-04.30', null, 'Murottal', 10, true, false),
+    ('Kajian Pagi / Faedah Pagi', '04.30-05.00', null, 'Kajian', 20, true, false),
+    ('Dzikir Pagi', '05.00-06.00', null, 'Dzikir', 30, true, false),
+    ('Kajian Aqidah', '08.00-10.00', null, 'Kajian', 40, true, false),
+    ('Kajian Fiqih', '13.00-15.00', null, 'Kajian', 50, true, false),
+    ('Murottal Sore', '15.30-17.00', null, 'Murottal', 60, true, false),
+    ('Dzikir Petang', '17.00-18.00', null, 'Dzikir', 70, true, false),
+    ('Kajian Malam', '19.30-21.00', null, 'Kajian', 80, true, true),
+    ('Siaran Bebas / AutoDJ', 'Menyesuaikan', null, 'AutoDJ', 90, true, false)
+) as seed(title, time_text, description, category, sort_order, is_active, is_live_slot)
+where not exists (select 1 from public.radio_schedule_items);

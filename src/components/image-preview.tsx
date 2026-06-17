@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 export function ImagePreview({ url }: { url: string }) {
-  const [failed, setFailed] = useState(false);
+  const [failedUrl, setFailedUrl] = useState("");
 
-  if (!url || failed) {
+  if (!url || failedUrl === url) {
     return (
       <div className="flex aspect-video items-center justify-center rounded-md border border-dashed border-[#c9b991] bg-[#f4ecd9] text-sm text-[#65725b]">
         Preview gambar belum tersedia
@@ -18,7 +18,7 @@ export function ImagePreview({ url }: { url: string }) {
     <img
       src={url}
       alt="Preview gambar"
-      onError={() => setFailed(true)}
+      onError={() => setFailedUrl(url)}
       className="aspect-video w-full rounded-md border border-[#d8cdb4] object-cover"
     />
   );

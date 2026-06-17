@@ -42,9 +42,46 @@ export type ScheduleItem = {
   updated_at: string;
 };
 
+export type PublicEventInfo = {
+  isActive: boolean;
+  title: string;
+  subtitle: string;
+  speaker: string;
+  dateText: string;
+  timeText: string;
+  location: string;
+  description: string;
+  imageUrl: string;
+  buttonText: string;
+  buttonUrl: string;
+};
+
+export type PublicLiveInfo = {
+  isActive: boolean;
+  title: string;
+  speaker: string;
+  topic: string;
+  timeText: string;
+  description: string;
+  imageUrl: string;
+  showRedLiveIndicator: boolean;
+  buttonText: string;
+  buttonUrl: string;
+};
+
+export type PublicScheduleItem = {
+  title: string;
+  timeText: string;
+  description: string;
+  category: string;
+  sortOrder: number;
+  isActive: boolean;
+  isLiveSlot: boolean;
+};
+
 export type PublicConfig = {
-  eventInfo: EventConfig | null;
-  liveInfo: LiveConfig | null;
-  schedule: ScheduleItem[];
+  eventInfo: PublicEventInfo;
+  liveInfo: PublicLiveInfo;
+  schedule: PublicScheduleItem[];
   updatedAt: string | null;
 };

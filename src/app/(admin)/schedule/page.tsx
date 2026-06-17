@@ -142,6 +142,31 @@ export default function SchedulePage() {
     await loadItems();
   }
 
+  async function toggleActive(item: ScheduleItem) {
+    setError("");
+    setMessage("");
+
+    const { error: updateError } = await createClient()
+      .from("radio_schedule_items")
+      .update({
+        is_active: !item.is_active,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", item.id);
+
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+
+    setMessage(
+      !item.is_active
+        ? "Jadwal berhasil diaktifkan."
+        : "Jadwal berhasil dinonaktifkan.",
+    );
+    await loadItems();
+  }
+
   return (
     <>
       <PageHeader
@@ -210,6 +235,13 @@ export default function SchedulePage() {
                         {item.is_live_slot ? " / Live" : ""}
                       </td>
                       <td className="space-x-2 px-4 py-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(item)}
+                          className="rounded-md border border-[#c9b991] px-3 py-1.5 text-sm font-medium text-[#47634d] hover:bg-[#efe4cd]"
+                        >
+                          {item.is_active ? "Nonaktifkan" : "Aktifkan"}
+                        </button>
                         <button
                           type="button"
                           onClick={() => setForm(toForm(item))}

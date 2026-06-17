@@ -3,9 +3,15 @@ import {
   createServiceServerClient,
 } from "@/lib/supabase/server";
 import { latestDate } from "@/lib/format";
+import { normalizeImageUrl } from "@/lib/normalize-image-url";
 import type { EventConfig, LiveConfig, ScheduleItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const noStoreHeaders = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+};
 
 const emptyEventInfo = {
   isActive: false,
@@ -46,7 +52,7 @@ function mapEventInfo(eventInfo: EventConfig | null) {
     timeText: eventInfo.time_text ?? "",
     location: eventInfo.location ?? "",
     description: eventInfo.description ?? "",
-    imageUrl: eventInfo.image_url ?? "",
+    imageUrl: normalizeImageUrl(eventInfo.image_url),
     buttonText: eventInfo.button_text ?? "",
     buttonUrl: eventInfo.button_url ?? "",
   };
@@ -62,7 +68,7 @@ function mapLiveInfo(liveInfo: LiveConfig | null) {
     topic: liveInfo.topic ?? "",
     timeText: liveInfo.time_text ?? "",
     description: liveInfo.description ?? "",
-    imageUrl: liveInfo.image_url ?? "",
+    imageUrl: normalizeImageUrl(liveInfo.image_url),
     showRedLiveIndicator: liveInfo.show_red_live_indicator,
     buttonText: liveInfo.button_text ?? "",
     buttonUrl: liveInfo.button_url ?? "",
@@ -115,7 +121,7 @@ export async function GET() {
     if (eventResult.error || liveResult.error || scheduleResult.error) {
       return Response.json(
         { error: "Failed to load public config." },
-        { status: 500 },
+        { status: 500, headers: noStoreHeaders },
       );
     }
 
@@ -126,16 +132,19 @@ export async function GET() {
       ...schedule.map((item) => item.updated_at),
     ]);
 
-    return Response.json({
-      eventInfo: mapEventInfo(eventResult.data),
-      liveInfo: mapLiveInfo(liveResult.data),
-      schedule: schedule.map(mapScheduleItem),
-      updatedAt,
-    });
+    return Response.json(
+      {
+        eventInfo: mapEventInfo(eventResult.data),
+        liveInfo: mapLiveInfo(liveResult.data),
+        schedule: schedule.map(mapScheduleItem),
+        updatedAt,
+      },
+      { headers: noStoreHeaders },
+    );
   } catch {
     return Response.json(
       { error: "Public config is not configured." },
-      { status: 500 },
+      { status: 500, headers: noStoreHeaders },
     );
   }
 }
